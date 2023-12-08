@@ -52,9 +52,8 @@ namespace ConsoleApp12
                     }
                 }
                
-                
-
             }
+            logFile.Close();
         }
         static void Main(string[] args)
         {
