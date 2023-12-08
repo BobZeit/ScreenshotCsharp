@@ -1,0 +1,6 @@
+outputDirectory//images//2023-12-08-11-34-12.png saved
+outputDirectory//images//2023-12-08-11-34-15.png saved
+outputDirectory//images//2023-12-08-11-34-17.png saved
+outputDirectory//images//2023-12-08-11-34-19.png saved
+outputDirectory\images\2023-12-08-11-36-19.png saved
+outputDirectory\images\2023-12-08-11-36-21.png saved
