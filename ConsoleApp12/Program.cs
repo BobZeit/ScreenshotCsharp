@@ -28,18 +28,18 @@ namespace ConsoleApp12
                 try
                 {
                     DateTime datePath = DateTime.ParseExact(imagePath, "yyyy-MM-dd-HH-mm-ss", CultureInfo.InvariantCulture);
-                    if ((DateTime.Now - datePath).Days > weeks * 7)
+                    if ((DateTime.Now - datePath).Days >= weeks * 7)
                     {
                         File.Delete(path + "\\" + fileinfo.Name);
-                        Console.WriteLine(path + "\\" + fileinfo.Name + "deleted");
-                        logfile.WriteLine(path + "\\" + fileinfo.Name + "deleted");
-                        logfile.Flush();
+                        Console.WriteLine(path + "\\" + fileinfo.Name + " deleted");
+                        logfile.WriteLine(path + "\\" + fileinfo.Name + " deleted");
+
                     }
                 }
                 catch(Exception e) 
                 { 
                     logfile.WriteLine(e.ToString());
-                    logfile.Flush();
+
                     break;
                 }
             }
@@ -51,42 +51,45 @@ namespace ConsoleApp12
         {
             var path = destDir + "\\images";
             Directory.CreateDirectory(path);
-            var logFile = new StreamWriter(destDir + "\\log.txt", true);
-            DateTime currentTime = DateTime.Now;
-            while (true)
+            using (var logFile = new StreamWriter(destDir + "\\log.txt", true))
             {
-                try
+                
+                while (true)
                 {
-                    DeletScreenShot(weeks, path, logFile);
-                    int screenLeft = SystemInformation.VirtualScreen.Left;
-                    int screenTop = SystemInformation.VirtualScreen.Top;
-                    int screenWidth = SystemInformation.VirtualScreen.Width;
-                    int screenHeight = SystemInformation.VirtualScreen.Height;
-                    var bitmap = new Bitmap(screenWidth, screenHeight);
-                    var graphic = Graphics.FromImage(bitmap);
-                    graphic.CopyFromScreen(screenLeft, screenTop, 0, 0, bitmap.Size);
-                    var docuName = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
-                    bitmap.Save(path + "\\" + docuName + ".png", ImageFormat.Png);
-                    Console.WriteLine(path + "\\" + docuName + ".png saved");
-                    logFile.WriteLine(path + "\\" + docuName + ".png saved");
-                    logFile.Flush();
-
-                    Thread.Sleep(seconds * 1000);
-                }
-                catch(Exception e)
-                {
-                    logFile.WriteLine(e.ToString());
-                    logFile.Flush();
-                    if(e.GetType() == new ExternalException().GetType() ||
-                        e.GetType() == new IOException().GetType() ||
-                        e.GetType() == new EncoderFallbackException().GetType())
+                    try
                     {
-                        break;
+                        DeletScreenShot(weeks, path, logFile);
+                        int screenLeft = SystemInformation.VirtualScreen.Left;
+                        int screenTop = SystemInformation.VirtualScreen.Top;
+                        int screenWidth = SystemInformation.VirtualScreen.Width;
+                        int screenHeight = SystemInformation.VirtualScreen.Height;
+                        var bitmap = new Bitmap(screenWidth, screenHeight);
+                        var graphic = Graphics.FromImage(bitmap);
+                        graphic.CopyFromScreen(screenLeft, screenTop, 0, 0, bitmap.Size);
+                        var docuName = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
+                        bitmap.Save(path + "\\" + docuName + ".png", ImageFormat.Png);
+                        Console.WriteLine(path + "\\" + docuName + ".png saved");
+                        logFile.WriteLine(path + "\\" + docuName + ".png saved");
+                       
+
+                        Thread.Sleep(seconds * 1000);
                     }
+                    catch (Exception e)
+                    {
+                        logFile.WriteLine(e.ToString());
+                        if (e.GetType() == new ExternalException().GetType() ||
+                            e.GetType() == new IOException().GetType() ||
+                            e.GetType() == new EncoderFallbackException().GetType())
+                        {
+                            break;
+                        }
+                    }
+
                 }
-               
+
             }
-            logFile.Close();
+
+          
         }
         static void Main(string[] args)
         {
